@@ -12,8 +12,10 @@ public class OrganizationRestTemplateClient {
     @Autowired
     RestTemplate restTemplate;
 
+    /** 향상된 스프링 RestTemplate을 사용해 리본 기반의 서비스를 호출 */
     public Organization getOrganization(String organizationId){
         ResponseEntity<Organization> restExchange =
+                /** Url : http://{applicationId}/v1/ ~~ */
                 restTemplate.exchange(
                         "http://organizationservice/v1/organizations/{organizationId}",
                         HttpMethod.GET,

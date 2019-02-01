@@ -13,5 +13,6 @@ public interface OrganizationFeignClient {
             method= RequestMethod.GET,
             value="/v1/organizations/{organizationId}",
             consumes="application/json")
+    /** 넷플릭스 Feign 클라이언트를 사용해서 리본을 통해 서비스 호출 */
     Organization getOrganization(@PathVariable("organizationId") String organizationId);
 }

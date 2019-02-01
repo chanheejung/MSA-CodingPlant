@@ -20,9 +20,12 @@ spring:
         # encrypt.enabled: false
         git:
           uri: https://github.com/klimtever/config-repo/
-          searchPaths: licensingservice,organizationservice
           username: native-cloud-apps
           password: 0ffended
+          searchPaths: licensingservice,organizationservice
+          #uri: https://github.com/heeya1215/MSA-CodingPlant/tree/master/config-repo/
+          #username: heeya1215
+          #password: password
 
 
 ####
@@ -38,6 +41,6 @@ spring:
 #     config:
 #       server:
 #           native:
-#              searchLocations: file://<chapter 3>/confsvr/src/main/resources/config/licensingservice,
-#                               file://<chapter 3>confsvr/src/main/resources/config/organizationservice
+#              searchLocations: file:///D:\DevGitChan\MyStudy\MSA-CodingPlant\spmia-chapter3/confsvr/src/main/resources/config/licensingservice,
+#                               file:///D:\DevGitChan\MyStudy\MSA-CodingPlant\spmia-chapter3/src/main/resources/config/organizationservice
 ###              #searchLocations: classpath:config/,classpath:config/licensingservice

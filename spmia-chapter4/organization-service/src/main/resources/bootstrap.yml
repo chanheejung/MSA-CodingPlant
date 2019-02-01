@@ -1,6 +1,6 @@
 spring:
   application:
-    name: organizationservice
+    name: organizationservice # 유레카에 등록할 논리 이름
   profiles:
     active:
       default

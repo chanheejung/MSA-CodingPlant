@@ -65,20 +65,35 @@ public class LicenseService {
         }
     }
 
-    @HystrixCommand(//fallbackMethod = "buildFallbackLicenseList",
+    @HystrixCommand(
+            fallbackMethod = "buildFallbackLicenseList",
+            // 스레드 풀의 고유 이름 지정
             threadPoolKey = "licenseByOrgThreadPool",
+            // 스레드 풀 속성으로 동작 정의 및 설정
             threadPoolProperties =
+                    // 스레드 풀의 갯수를 정의
                     {@HystrixProperty(name = "coreSize",value="30"),
+                     // 스레드 풀 앞에 배치할 큐와 큐에 넣을 요청 수를 정의
+                     //  => 스레드가 분주할 때 큐 이용
                      @HystrixProperty(name="maxQueueSize", value="10")},
             commandProperties={
+                     // Timeout 설정 12초
+                     // @HystrixProperty(name="execution.isolation.thread.timeoutInMilliseconds", value="12000"),
+                     // 히스트릭스가 호출 차단을 고려하는데 필요한 시간
                      @HystrixProperty(name="circuitBreaker.requestVolumeThreshold", value="10"),
+                     // 호출 차단 실패 비율
                      @HystrixProperty(name="circuitBreaker.errorThresholdPercentage", value="75"),
+                     // 차단 후 서비스의 회복 상태를 확인할 때까지 대기할 시간
                      @HystrixProperty(name="circuitBreaker.sleepWindowInMilliseconds", value="7000"),
+                     // 서비스 호출 문제를 모니터할 시간 간격을 설정
                      @HystrixProperty(name="metrics.rollingStats.timeInMilliseconds", value="15000"),
+                     // 설정한 시간 간격 동안 통계를 수집할 횟수를 설정
                      @HystrixProperty(name="metrics.rollingStats.numBuckets", value="5")}
     )
     public List<License> getLicensesByOrg(String organizationId){
         logger.debug("LicenseService.getLicensesByOrg  Correlation id: {}", UserContextHolder.getContext().getCorrelationId());
+
+        /** DB 호출 3회중 랜덤 1회 11초 지연 */
         randomlyRunLong();
 
         return licenseRepository.findByOrganizationId(organizationId);

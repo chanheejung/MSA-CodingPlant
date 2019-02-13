@@ -13,11 +13,15 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 public class ThreadLocalConfiguration {
+
+        /** 구성 객체가 생성될 때 기존 HystrixConcurrencyStrategy와 자동 연결(autowire)한다. */
         @Autowired(required = false)
         private HystrixConcurrencyStrategy existingConcurrencyStrategy;
 
         @PostConstruct
         public void init() {
+            /** 새로운 병행성 전략을 등록하기 때문에 모든 히스트릭스 컴포넌트를 가져와
+             *   히스트릭스 플러그인을 재설정한다. */
             // Keeps references of existing Hystrix plugins.
             HystrixEventNotifier eventNotifier = HystrixPlugins.getInstance()
                     .getEventNotifier();
@@ -30,7 +34,11 @@ public class ThreadLocalConfiguration {
 
             HystrixPlugins.reset();
 
-            HystrixPlugins.getInstance().registerConcurrencyStrategy(new ThreadLocalAwareStrategy(existingConcurrencyStrategy));
+            HystrixPlugins.getInstance().registerConcurrencyStrategy(
+                    /** 이제 HystrixConcurrencyStrategy(ThreadLocalAwareStrategy)를
+                     *    히스트릭스 플러그인에 등록한다. */
+                    new ThreadLocalAwareStrategy(existingConcurrencyStrategy));
+            /** 히스트릭스 플러그인이 사용하는 모든 히스트릭스 컴포넌트를 재등록한다. */
             HystrixPlugins.getInstance().registerEventNotifier(eventNotifier);
             HystrixPlugins.getInstance().registerMetricsPublisher(metricsPublisher);
             HystrixPlugins.getInstance().registerPropertiesStrategy(propertiesStrategy);

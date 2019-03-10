@@ -1,21 +1,36 @@
+# 1. 개발자가 깃허브에 있는 마이크로서비스 코드를 업데이트
+# 2. Travis CI는 업데이트된 코드를 저장소에서 가져와 .travis.yml(현재 파일)을 이용해 빌드&배포 프로세스 시작
+
+# -- 이하는 .travis.yml 단계
+# 3. 빌드 구성&의존성 설정
+#     3.1.1 언어(자바)와 소프트 웨어 설치 (자바와 JDK8 사용)
 language: java
 jdk:
 - openjdk8
+#     3.1.2 빌드가 실행된 메이븐 디렉터리를 캐시하고 재사용 할 것을 Travis에 지정
 cache:
   directories:
   - "$HOME/.m2"
+#     3.2 도커에 액세스(컨테이너 생성&태깅)를 위한 sudo 권한 필요
+#         빌드가 실행되는 가상 머신에서 sudo 액세스의 허용 여부를 지정
 sudo: required
+#         빌드가 시작될때 도커를 시작하도록 설정
 services:
 - docker
+#     3.3 빌드 성공/실패의 알림 방법
 notifications:
   email:
   - carnell28@gmail.com
   on_success: always
   on_failure: always
+#      Travis에 마스터 브랜치에만 커밋이 발생할 때 빌드하도록 지정
+#       - 이 설정으로 저장소에 태그를 붙이거나 릴리스를 생성할 때마다 빌드 되지 않는다.addons:
+#         Travis가 무한 빌드 되는 것을 방지
 branches:
   only:
   - master
 
+#     3.4 빌드에 필요한 보안 환경 변수의 설정
 # env:
 #   global:
 #   - secure: E6WqUsvNBaznI6xiaDLzBVLr7pKGqR3uGOjBXqT5m6snZnQmH7awu364aHXgE5wte7kODIbtIhWOBFUxZqdFT6UUF/sTGrBEfVbK7H4cFNconiSoY9TJU6lll4MK/KMNHKCew4WfCDCTDefCuN4fVbMmb+hKHTGYNMo5IyzYFrpqitdt1Q3uNbu0A25tyAKluZ5eTMbO5ZG76B2eX5Pvge6h3Y0qEsCY+1vP7xcSBIEJYVw+PMfvp7DDgwkj4oAPu0wEelaxLfeCUDfkPRBAnCauyKfg1Ida1/aIieBd2xVkv+Ypm0lYnoMV/xlvuoZY6so4W7Ii3SJC7LGYVDtvcDSUY8yZVhNx8Lyf0G+PdjqoJcAkR670hwpDYAw6oe7neC4nRu+P60Z9MORe7rFSVDum0N/HZgAzDIOroZg4o00lqlH9GC/2OahLPxiq3cCl8i6lRi63m2aKHr/DNaPQ3312zoHA3G8TZYS1ZvfSLIEfCAOI4Ywz5N2CrE1vXbJX4nA/q1+R5tUwNKfB/KGC9hqHzuosBA5O1lQYJcTPLOMEH3qH1deen3T4KkjAWDhxZE93ovfmXUmZz3kMtkWXr3yEwwWM6L49QMPF0Iv+/eXOWnjYexJ0YU5hljgG96mBNhiLURRg/xDI6BsJLKBEb2fNGfp8k1crTyv7dVvjYvo=
@@ -24,16 +39,30 @@ branches:
 #   - secure: KOnFu91uxkxVpIgztouC6pHYYQBlbkifZ6vB3THU3RVh8DN5a2Q2jKJ9lqq5eDQn8csgNktDrAEXaSjVhychCXdAZelrk6LrTESeNG3pH60/fyxFvOuuJhE3lyTVMNL1uczJk4SShsUrJWKvO60GHh+ZGLDdcO/hq3K/RuQofMsmDeSiDlL/QW6eo2uoAD7JlSUvGdyJBpA0l0kMXvdLRhDoxQMjAUUKZQBt9wHPWiajqtDTlkLTV++mDsIzqZ+a98ZERtwoSSdUxWx4A4i3/UmhBL0YpHz0zCFD+3wYJODwTanQLpv2bbNBKyvRFvdSZqtzuTN/uIsxDlHUmtLGaO8QvASbTV29tNK5XFnUG80LpyLRysJVQPQqJhX4nH6zUrMuqc7mpF1XBcTTLnzhnmEYH0MuYSOdEQKAWfgXP2PmV6/F+lNcILgHv4DcX5yha0zCGnv3sKE3F3SeSYqzCtBrcISVLKyuPkO8qMdaGAeJPtdvknLrm4nNjXbBtEyrz145UkBh5uua/CXXrheDsKZudRRVjqTtbvYZ4nojqidb1H8a/v0yPixL+i/0z/RynRQ02h+VxESzA5Tv6CZOzjvkCPjY5DYq7KOPJNtoKbrD5+23Y5+UN6/Og6C8eef6mIirY+NE5qJxPUoNfA6FCFW0W1SSJpW4mme6e+a0n9w=
 #   - secure: IMo6+b8kxTXhavolsJQDwWPm5rKZfadUJu6U0sG/prFWi+wzMXln5XpASiiHomzDKQ3XYp6jrn8nU66R/H2Usv2Q9U/ikLevTXY4UGGxbzCU8j/yCOSzzZyD5K6XlvhFmqZClAuVCw8CRyzXMuBbq9dmZqOg+c5axlcLXH+W6raYWsS8t/kZuzVtp4thWX/7vOToxR7wZr8zQ+w/v8khXs9rs69fIv1YDPx+I8+spheFXGDsyI2bM+ZOxMbQxNHWtpsQpde6XIfaHo6cBUgx7C8Z8dr2/x3xGrDQ7SVzGw865fuEEaGs9wYa5C212NIPAeeA2ZIoob2qK2C+CA6N2wByZ/bGWXTTF0VzNIoiVZfZZuI60Jxk4wboCM5Ivdk2jxyEIFwPDfduarGIeSnooJo6dVj2jye/l46yF6Dzkwv9ZgpkMKch7tF/eftsY/BwTM8m0nKYcVbwpT5M9bmrQZCzrJfYqLJfASsM8B0mxkFD2Owtwswdw2C4MhtvcGwvOpMn4Td/sMv+QODNnEn9/yQX4iOAqtTU3m8VhqOOHqzPN/UcjW/Ro5vcDmY232zZljUYdcYyOrphheJJ/iMwk0YlLz+rIEATNSOSb9aD4hTMtinHMXxxe5FyZiZ7Upk2vnuMogjbQ0hvEWAkXYh2DRlKwiiNyPi0+MHWF5kdb60=
 #   - secure: Goov9RprZUuDT2VxFtrBErskV0qO9EsOXFINXel3jewa57BTzbeTLXNYKx4b0HSfnTEUq8/sU9W3gcWJUaDxirpV5h586yBQCTfMrLzraYeLzrxG4SYfI9fc/bKYyYINU2yG22PY0h+IofS326tn6CeR56B5XOhkqhc+A0kgs7Jg9SH1OCum9hAzKY8l8U3QGxPJvEYrZO9C0xoA1i32NlOj8Kv42OfAlBhixpwAZufpDE3+1QAEaTuDb1WANEdVqWqOMm9mUsIwsF+wTQMFSILbuiAIlos7+SJ8ohIEM7YxUjDwiBVmHSUd6K3erf4AOfPGHp1P6YYcuWsOrXMutp6vHAwI1bBkln9hRDf7uOtSJvxCaWjTMMo7aVTcRHe5lm70cIeVjAcCVGhiLO4pq/QE2Jk9i569oIRqF8XKBkKFqvi8NhV/KA784giSKiY03lupetdniSzadDBhiZszJ94AdRa0qJY2klc7rjxcvDpBaMmxYC44t5mx4uWEmk4Mvc3t1Av5NsnvuwvacwUYJFx8BwGoRW0lMvPqdWlpTY7ZUW8dtshzCipila/vktkn5UFWxBa1a+sP+u6ESbqD157QXmpTOKAl3A5W7C2IutiFbpcZDe8GxX57j8fNyM8Cm/wsR/wLlvR25hz86Fsf02OylAk7THONUQn2B8eGil0=
+
+# 4. 빌드가 실행되기 전에 빌드에 필요한 외부라이브러리나 명령줄 도구 설치 (travis와 ecs-cli 등)
 before_install:
+# travis 명령줄 도구 설치
 - gem install travis -v 1.8.9 --no-document
+# 아마존 ECS 클라이언트 설치 : 도커 컨테이너를 아마존에 배포, 시작, 중지하는데 사용
 - sudo curl -k -o /usr/local/bin/ecs-cli https://s3.amazonaws.com/amazon-ecs-cli/ecs-cli-linux-amd64-latest
+# 아마존 ECS 클라이언트에 실행할 수 있도록 권한 변경
 - sudo chmod +x /usr/local/bin/ecs-cli
+# 빌드 프로세스에서 사용될 환경 변수 설정
+#  - 고유한 빌드 이름 : 빌드이름-날짜(초단위)-Travis의 빌드 번호
 - export BUILD_NAME=chapter10-$TRAVIS_BRANCH-$(date -u "+%Y%m%d%H%M%S")-$TRAVIS_BUILD_NUMBER
+#  - 도커 컨테이너가 실행될 아마존 ECS의 가상 머신 IP 주소
 - export CONTAINER_IP=13.125.174.58
+#  - 실행중인 빌드 작업의 이름
 - export PLATFORM_TEST_NAME="chapter10-platform-tests"
 script:
+# 5. 빌드 이름으로 소스에 태그를 다는 셀 스크립트를 실행
 - sh travis_scripts/tag_build.sh
+# 6. 메이븐을 사용해 서버와 로컬 도커 이미지를 빌드
 - sh travis_scripts/build_services.sh
+# 7. 도커 이미지를 도커 허브에 올림
 - sh travis_scripts/deploy_to_docker_hub.sh
+# 8. 아마존 ECS 컨테이너에서 서비스를 시작
 - sh travis_scripts/deploy_to_amazon_ecs.sh
+# 9. 빌드된 서비스에 대해 플랫폼 테스트를 실행하는 Travis 빌드를 시작
 # sh travis_scripts/trigger_platform_tests.sh

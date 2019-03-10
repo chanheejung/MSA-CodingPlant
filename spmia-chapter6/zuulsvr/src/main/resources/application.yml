@@ -26,4 +26,5 @@ eureka:
 zuul:
   prefix:  /api
   routes:
+    # 수동 경로 매핑  http://localhost:5555/oranization/v1/~~
     organizationservice: /organization/**

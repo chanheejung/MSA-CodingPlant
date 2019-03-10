@@ -17,7 +17,9 @@ import java.util.List;
 @EnableZuulProxy
 public class ZuulServerApplication {
 
-    @LoadBalanced
+    /** 상관관계 ID의 전파 처리 2 (전파 처리 1은  UserContextInterceptor)
+     * RestTemplate 빈을 정의하여 UserContextInterceptor를 추가한다. */
+    @LoadBalanced // RestTemplate 객체가  리본을 사용
     @Bean
     public RestTemplate getRestTemplate(){
         RestTemplate template = new RestTemplate();

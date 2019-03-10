@@ -1,4 +1,5 @@
 echo "Beginning platform tests for build $BUILD_NAME"
+# 깃허브 토큰을 사용해 Travis CI에 로그인하고 반환된 OAuth2 토큰을 RESULTS 변수에 저장한다.
 travis login --org --no-interactive  --github-token $GITHUB_TOKEN
 export RESULTS=`travis token --org`
 export TARGET_URL="https://api.travis-ci.org/repo/carnellj%2F$PLATFORM_TEST_NAME/requests"

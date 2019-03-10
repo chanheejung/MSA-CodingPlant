@@ -53,16 +53,20 @@ public class SpecialRoutesFilter extends ZuulFilter {
 
     @Override
     public String filterType() {
+        /** 경로 필터로 지정 */
         return filterUtils.ROUTE_FILTER_TYPE;
     }
 
+
     @Override
     public int filterOrder() {
-        return FILTER_ORDER;
+        /** 해당 타입의 다른 필터와 비교해 실행해야하는 순서 */
+        return FILTER_ORDER; // 상수 1
     }
 
     @Override
     public boolean shouldFilter() {
+        /** 필터 활성화 여부 */
         return SHOULD_FILTER;
     }
 
